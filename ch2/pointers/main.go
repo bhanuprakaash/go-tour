@@ -22,6 +22,10 @@ func main() {
 	key1, key2 := 2, 3
 	swap(&key1, &key2)
 	fmt.Println("after swap: ", key1, key2)
+
+	fmt.Println("--------using new-----------")
+	newVariable := new(int)
+	fmt.Println(*newVariable)
 }
 
 func f() *int {
