@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/bhanuprakaash/go-tour.git/ch2/tempconv"
+)
 
 type Celsius float64
 type Fahrenheit float64
@@ -9,7 +13,7 @@ type Miles float64
 type Kilometers float64
 
 func main() {
-	var c Celsius = 100
+	var c Celsius = 102
 	var f Fahrenheit = Fahrenheit(c)
 
 	typeDiff(c)
@@ -18,6 +22,9 @@ func main() {
 	fmt.Println(c == Celsius(f))
 	fmt.Println(c == 22)
 	fmt.Println(f - Fahrenheit(c))
+
+	fmt.Println(tempconv.CToF(tempconv.Celsius(c)))
+	fmt.Println(tempconv.CToK(0))
 }
 
 func (c Celsius) String() string {
