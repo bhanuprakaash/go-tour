@@ -19,6 +19,8 @@ func main() {
 	for _, s := range inputs {
 		fmt.Printf("Input: %-12s | Output: %s\n", s, comma(s))
 	}
+
+	isAnagram("silent こんにちは", "listen こんにちは")
 }
 
 func comma(s string) string {
@@ -48,4 +50,28 @@ func comma(s string) string {
 	}
 
 	return buf.String()
+}
+
+func isAnagram(s1, s2 string) bool {
+	rf := []rune(s1)
+	rs := []rune(s2)
+
+	if len(rf) != len(rs) {
+		return false
+	}
+
+	freq := make(map[rune]int)
+
+	for _, r := range rf {
+		freq[r]++
+	}
+
+	for _, r := range rs {
+		freq[r]--
+		if freq[r] < 0 {
+			return false
+		}
+	}
+
+	return true
 }
