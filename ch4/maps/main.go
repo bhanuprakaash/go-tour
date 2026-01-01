@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 func main() {
@@ -14,6 +15,8 @@ func main() {
 	// }
 
 	ages := make(map[string]int)
+	freq := make(map[string]int)
+	text := "this is first text of this text"
 
 	ages["alice"] = 23
 	ages["mark"] = 12
@@ -30,9 +33,22 @@ func main() {
 	}
 
 	if age, ok := ages["bob"]; !ok {
-		fmt.Printf("%T", age)
+		fmt.Printf("%T\n", age)
 	}
 
+	wordFreq(freq, text)
+
+	fmt.Println("-------------------------")
+	for word, count := range freq {
+		fmt.Printf("%s\t%d\n", word, count)
+	}
+	fmt.Println("-------------------------")
 
 }
 
+func wordFreq(freq map[string]int, text string) {
+	words := strings.Fields(text)
+	for _, word := range words {
+		freq[word]++
+	}
+}
