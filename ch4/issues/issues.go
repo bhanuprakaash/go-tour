@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/bhanuprakaash/go-tour.git/ch4/github"
 )
@@ -15,7 +16,7 @@ func main() {
 	}
 	fmt.Printf("%d issues:\n", result.TotalCount)
 	for _, item := range result.Items {
-		fmt.Printf("#%-5d %9.9s %.55s\n",
-			item.Number, item.User.Login, item.Title)
+		fmt.Printf("#%-5d %9.9s %.55s %v\n",
+			item.Number, item.User.Login, item.Title, item.CreatedAt.Format(time.DateOnly))
 	}
 }
