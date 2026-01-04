@@ -1,0 +1,3 @@
+Go is fun.
+File IO is easy.
+End.
