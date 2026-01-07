@@ -2,11 +2,16 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"math"
 	"net/url"
 )
 
 type Point struct{ X, Y float64 }
+type ColoredPoint struct {
+	Point
+	Color color.RGBA
+}
 
 func (p Point) Distance(q Point) float64 {
 	return math.Hypot(q.X-p.X, q.Y-p.Y)
@@ -96,5 +101,20 @@ func main() {
 	// m = nil
 	// fmt.Println(m.Get("item"))
 	// m.Add("item", "3")
+
+	red := color.RGBA{255, 0, 0, 255}
+	blue := color.RGBA{0, 0, 255, 255}
+	var pz = ColoredPoint{Point{1, 1}, red}
+	var qz = ColoredPoint{Point{5, 4}, blue}
+
+	fmt.Println(pz.Distance(qz.Point))
+
+	distanceFromP := p.Distance
+
+	fmt.Println(distanceFromP(q))
+
+	distance := Point.Distance
+
+	fmt.Println(distance(p, q))
 
 }
