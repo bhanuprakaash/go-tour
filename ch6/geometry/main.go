@@ -5,6 +5,8 @@ import (
 	"image/color"
 	"math"
 	"net/url"
+
+	"github.com/bhanuprakaash/go-tour.git/ch6/counter"
 )
 
 type Point struct{ X, Y float64 }
@@ -116,5 +118,20 @@ func main() {
 	distance := Point.Distance
 
 	fmt.Println(distance(p, q))
+
+	cc := counter.New(1)
+	cc1 := counter.Counter{}
+
+	cc1.Increment()
+
+	cc.Increment()
+	cc.Increment()
+
+	fmt.Println(cc.Value())
+
+	cc.Reset()
+
+	fmt.Println(cc.Value())
+	fmt.Println(cc1.Value())
 
 }
