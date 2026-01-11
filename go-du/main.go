@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/fs"
 	"path/filepath"
 	"strings"
@@ -50,6 +51,15 @@ func main() {
 	})
 
 	for _, analyzer := range analyzers {
+		switch v := analyzer.(type) {
+		case *SizeStats:
+			fmt.Printf("\n[DEBUG] SizeStats memory address: %p\n", v)
+		case *TypeStats:
+			fmt.Printf("\n[DEBUG] Tracking %d distinct file types\n", len(v.Extensions))
+		default:
+			fmt.Println("\n[DEBUG] Generic Analyzer")
+		}
+
 		analyzer.Report()
 	}
 }

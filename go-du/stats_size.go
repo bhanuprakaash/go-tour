@@ -19,3 +19,7 @@ func (s *SizeStats) Report() {
 	fmt.Printf("Files Found: %d\n", s.FileCount)
 	fmt.Printf("Total Files Size: %.2f\n", float64(s.TotalSize)/(1024*1024))
 }
+
+func (s *SizeStats) Reset() {
+	s.TotalSize = 0
+}
