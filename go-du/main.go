@@ -23,6 +23,7 @@ func main() {
 	var analyzers = []Analyzer{
 		&SizeStats{},
 		&TypeStats{},
+		&DuplicateStats{},
 	}
 
 	filepath.Walk(root, func(path string, info fs.FileInfo, err error) error {
