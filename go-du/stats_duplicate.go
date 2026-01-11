@@ -22,7 +22,7 @@ func (d *DuplicateStats) Analyze(path string, info fs.FileInfo) {
 	d.FilesBySize[info.Size()] = append(d.FilesBySize[info.Size()], path)
 }
 
-func (d *DuplicateStats) Report() {
+func (d *DuplicateStats) Report(w io.Writer) {
 
 	var wastedSpace int64
 	var duplicateCount int
@@ -48,9 +48,9 @@ func (d *DuplicateStats) Report() {
 				wasted := int64(len(sameFiles)-1) * size
 				wastedSpace += wasted
 
-				fmt.Printf("Duplicate Group (%d bytes):\n", size)
+				fmt.Fprintf(w, "Duplicate Group (%d bytes):\n", size)
 				for _, f := range sameFiles {
-					fmt.Printf(" - %s\n", f)
+					fmt.Fprintf(w, " - %s\n", f)
 				}
 			}
 		}
@@ -58,9 +58,9 @@ func (d *DuplicateStats) Report() {
 	}
 
 	if duplicateCount == 0 {
-		fmt.Println("No duplicates found.")
+		fmt.Fprintln(w, "No duplicates found.")
 	} else {
-		fmt.Printf("\nTotal Wasted Space: %.2f MB\n", float64(wastedSpace)/(1024*1024))
+		fmt.Fprintf(w, "\nTotal Wasted Space: %.2f MB\n", float64(wastedSpace)/(1024*1024))
 	}
 
 }

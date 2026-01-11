@@ -1,0 +1,17 @@
+Files Found: 358
+Total Files Size: 0.61
+          : 279
+.go       : 50
+.sample   : 14
+.txt      : 9
+.pack     : 1
+.md       : 1
+.mod      : 1
+.sum      : 1
+.idx      : 1
+.rev      : 1
+Duplicate Group (7545 bytes):
+ - ../.git/logs/HEAD
+ - ../.git/logs/refs/heads/main
+
+Total Wasted Space: 0.01 MB

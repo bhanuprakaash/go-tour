@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
 )
 
@@ -15,9 +16,9 @@ func (s *SizeStats) Analyze(path string, info fs.FileInfo) {
 	s.TotalSize += info.Size()
 }
 
-func (s *SizeStats) Report() {
-	fmt.Printf("Files Found: %d\n", s.FileCount)
-	fmt.Printf("Total Files Size: %.2f\n", float64(s.TotalSize)/(1024*1024))
+func (s *SizeStats) Report(w io.Writer) {
+	fmt.Fprintf(w, "Files Found: %d\n", s.FileCount)
+	fmt.Fprintf(w, "Total Files Size: %.2f\n", float64(s.TotalSize)/(1024*1024))
 }
 
 func (s *SizeStats) Reset() {

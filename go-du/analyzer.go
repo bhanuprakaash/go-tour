@@ -1,8 +1,11 @@
 package main
 
-import "io/fs"
+import (
+	"io"
+	"io/fs"
+)
 
 type Analyzer interface {
 	Analyze(path string, info fs.FileInfo)
-	Report()
+	Report(w io.Writer)
 }

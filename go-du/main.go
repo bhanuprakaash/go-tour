@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -50,7 +51,14 @@ func main() {
 		return nil
 	})
 
+	file, err := os.Create("output.txt")
+	if err != nil {
+		fmt.Printf("%s", err)
+		file = os.Stdout
+	}
+	defer file.Close()
 	for _, analyzer := range analyzers {
+		analyzer.Report(file)
 		switch v := analyzer.(type) {
 		case *SizeStats:
 			fmt.Printf("\n[DEBUG] SizeStats memory address: %p\n", v)
@@ -59,7 +67,5 @@ func main() {
 		default:
 			fmt.Println("\n[DEBUG] Generic Analyzer")
 		}
-
-		analyzer.Report()
 	}
 }
