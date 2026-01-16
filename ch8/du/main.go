@@ -11,9 +11,13 @@ import (
 )
 
 var sema = make(chan struct{}, 20)
+var done = make(chan struct{})
 
 func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
 	defer n.Done()
+	if cancelled() {
+		return
+	}
 	for _, entry := range direntries(dir) {
 		if entry.IsDir() {
 			n.Add(1)
@@ -26,7 +30,11 @@ func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
 }
 
 func direntries(dir string) []os.FileInfo {
-	sema <- struct{}{}
+	select {
+	case sema <- struct{}{}: // acquire token
+	case <-done:
+		return nil
+	}
 	defer func() { <-sema }()
 	entries, err := ioutil.ReadDir(dir)
 	if err != nil {
@@ -40,16 +48,25 @@ func printDiskUsage(nfiles, nbytes int64) {
 	fmt.Printf("%d files %.1f GB\n", nfiles, float64(nbytes)/1e9)
 }
 
+func cancelled() bool {
+	select {
+	case <-done:
+		return true
+	default:
+		return false
+	}
+}
+
 func main() {
+	fileSizes := make(chan int64)
+	tick := time.Tick(500 * time.Millisecond)
+	var n sync.WaitGroup
+
 	flag.Parse()
 	roots := flag.Args()
 	if len(roots) == 0 {
 		roots = []string{"."}
 	}
-
-	fileSizes := make(chan int64)
-	tick := time.Tick(500 * time.Millisecond)
-	var n sync.WaitGroup
 
 	for _, dir := range roots {
 		n.Add(1)
@@ -61,10 +78,19 @@ func main() {
 		close(fileSizes)
 	}()
 
+	go func() {
+		os.Stdin.Read(make([]byte, 1))
+		close(done)
+	}()
+
 	var nfiles, nbytes int64
 loop:
 	for {
 		select {
+		case <-done:
+			for range fileSizes {
+			}
+			return
 		case size, ok := <-fileSizes:
 			if !ok {
 				break loop
