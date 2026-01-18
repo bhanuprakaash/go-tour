@@ -40,6 +40,20 @@ func getTitle(url string) (string, error) {
 	}
 }
 
+func worker(urls <-chan string, wg *sync.WaitGroup, results chan<- Result, ticker *time.Ticker) {
+	defer wg.Done()
+	for url := range urls {
+		<-ticker.C
+		title, err := getTitle(url)
+		results <- Result{
+			url:   url,
+			title: title,
+			err:   err,
+		}
+	}
+
+}
+
 func main() {
 	urls := []string{
 		"https://google.com",
@@ -50,20 +64,21 @@ func main() {
 	}
 	var wg sync.WaitGroup
 	var resultsChan = make(chan Result, len(urls))
+	var workers = 3
+	var urlsChan = make(chan string)
+	rate := time.Second / 2
+	ticker := time.NewTicker(rate)
+	defer ticker.Stop()
+
+	for i := 0; i < workers; i++ {
+		wg.Add(1)
+		go worker(urlsChan, &wg, resultsChan, ticker)
+	}
 
 	for _, url := range urls {
-		wg.Add(1)
-		go func(url string) {
-			defer wg.Done()
-			title, err := getTitle(url)
-
-			resultsChan <- Result{
-				url:   url,
-				title: title,
-				err:   err,
-			}
-		}(url)
+		urlsChan <- url
 	}
+	close(urlsChan)
 
 	go func() {
 		wg.Wait()
